@@ -1,0 +1,46 @@
+version: '3.7'
+
+services:
+
+#  celery:
+#    build: trading_api
+#    networks:
+#      - proxy
+#    command: celery -A routines worker -B -l info
+#    env_file:
+#      - .env
+#    depends_on:
+#      - postgres
+#      - redis
+
+
+  postgres:
+    image: postgres:12.0
+    environment:
+      POSTGRES_PASSWORD: pass
+      POSTGRES_USER: tester
+      POSTGRES_DB: postgres
+    env_file:
+      - ../venv/.env
+    ports:
+      - 5432:5432
+    expose:
+      - 5432
+    networks:
+      - proxy
+
+#  redis:
+#    hostname: redis
+#    image: redis:alpine
+#    networks:
+#      - proxy
+#    logging:
+#      driver: none
+
+
+networks:
+  proxy:
+    driver: bridge
+
+volumes:
+  postgres_data:
