@@ -39,17 +39,23 @@ def test():
 app.conf.beat_schedule = {
     'run-people': {
         'task': 'api.tasks.get_people_news',
+        # 'schedule': crontab(minute='*/1')
         'schedule': crontab(minute='*/1')
         },
+    # 'run-test_selery': {
+    #     'task': 'api.tasks.test_selery',
+    #     # 'schedule': crontab(minute='*/1')
+    #     'schedule': 2
+    #     },
 
-    'run-realt': {
-            'task': 'api.tasks.get_realt_news',
-            'schedule': crontab(minute='*/1')
-            },
-
-    'run-tech': {
-            'task': 'api.tasks.get_tech_news',
-            'schedule': crontab(minute='*/1')
-            },
-
+    # 'run-realt': {
+    #         'task': 'api.tasks.get_realt_news',
+    #         'schedule': crontab(minute='*/1')
+    #         },
+    #
+    # 'run-tech': {
+    #         'task': 'api.tasks.get_tech_news',
+    #         'schedule': crontab(minute='*/1')
+    #         },
+    #
     }

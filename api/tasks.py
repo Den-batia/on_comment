@@ -18,3 +18,10 @@ def get_tech_news():
     from .parser import Parser
     Parser.get_tech()
 
+
+@shared_task()
+def test_selery():
+    from .webdriver.webdriver import ocra
+    a = ocra.get_html_js('https://www.tut.by/')
+    print(a)
+

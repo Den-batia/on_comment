@@ -1,4 +1,4 @@
-from selenium import webdriver
+from .webdriver.webdriver import Ocra
 from bs4 import BeautifulSoup as bs
 import requests
 import datetime
@@ -16,12 +16,15 @@ class Parser:
         dom = session.get(f'{url}/{str_date}').text
         soup = bs(dom, 'html.parser')
         list_of = soup.find_all('div', class_='news-tidings__item')
-
+        ocra = Ocra.get_html_js()
         for i in list_of:
-            cls._get_news(i, url)
-
+            try:
+                cls._get_news(i, url, ocra)
+            except Exception:
+                continue
+        ocra.quit()
     @classmethod
-    def _get_news(cls, el, url):
+    def _get_news(cls, el, url, ocra):
 
         data_post_date = el['data-post-date']
         news_link = el.find('a', class_='news-tiles__stub')
@@ -39,20 +42,17 @@ class Parser:
         news_img_link = img[img.find('https'):-2]
 
         link = url + link
-        browser = webdriver.Chrome()
-        browser.get(link)
-        html = browser.page_source
+        ocra.get(link)
 
+        html = ocra.page_source
         soup = bs(html, 'html.parser')
-        browser.quit()
         top_comment = soup.find('div', class_='news-comment__speech news-comment__speech_base').p.text
 
-        # print({'post_date': data_post_date,
-        #        'news_text': news_text,
-        #        'news_img_link': news_img_link,
-        #        'news_link': link,
-        #        'top_comment': top_comment})
-        print(link)
+        print({'post_date': data_post_date,
+               'news_text': news_text,
+               'news_img_link': news_img_link,
+               'news_link': link,
+               'top_comment': top_comment})
 
     @classmethod
     def _get_session(cls, base_url):
