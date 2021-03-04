@@ -12,17 +12,17 @@ class Parser:
     AUTO_URL = 'https://auto.onliner.by'
 
     @classmethod
-    def _get_tag_requests(cls, url, session, str_date):
+    def _get_tag_requests(cls, url, session, str_date, ocra):
         dom = session.get(f'{url}/{str_date}').text
         soup = bs(dom, 'html.parser')
         list_of = soup.find_all('div', class_='news-tidings__item')
-        ocra = Ocra.get_html_js()
         for i in list_of:
             try:
                 cls._get_news(i, url, ocra)
-            except Exception:
+            except Exception as e:
+                print(e)
                 continue
-        ocra.quit()
+
     @classmethod
     def _get_news(cls, el, url, ocra):
 
@@ -55,21 +55,17 @@ class Parser:
                'top_comment': top_comment})
 
     @classmethod
-    def _get_session(cls, base_url):
+    def _get_session(cls, base_url, ocra, session):
+        str_date = datetime.date.today().strftime("%Y/%m/%d")
+        cls._get_tag_requests(base_url, session, str_date, ocra)
+
+
+    @classmethod
+    def get_people(cls, ocra):
         with requests.Session() as session:
-            str_date = datetime.date.today().strftime("%Y/%m/%d")
-            cls._get_tag_requests(base_url, session, str_date)
+            cls._get_session(cls.PEOPLE_URL, ocra, session)
+            cls._get_session(cls.REALT_URL, ocra, session)
+            cls._get_session(cls.TETH_URL, ocra, session)
 
-    @classmethod
-    def get_people(cls):
-        cls._get_session(cls.PEOPLE_URL)
-
-    @classmethod
-    def get_realt(cls):
-        cls._get_session(cls.REALT_URL)
-
-    @classmethod
-    def get_tech(cls):
-        cls._get_session(cls.TETH_URL)
 
 
