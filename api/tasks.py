@@ -2,7 +2,7 @@ from celery import shared_task
 from .webdriver.webdriver import Ocra
 
 
-@shared_task(soft_time_limit=90)
+@shared_task(soft_time_limit=30)
 def get_people_news():
     from .parser import Parser
     try:

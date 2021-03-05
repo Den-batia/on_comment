@@ -2,6 +2,7 @@ from .webdriver.webdriver import Ocra
 from bs4 import BeautifulSoup as bs
 import requests
 import datetime
+from .models import News, NewsTag
 
 
 class Parser:
@@ -48,11 +49,20 @@ class Parser:
         soup = bs(html, 'html.parser')
         top_comment = soup.find('div', class_='news-comment__speech news-comment__speech_base').p.text
 
-        print({'post_date': data_post_date,
+        obj = {'post_date': data_post_date,
                'news_text': news_text,
                'news_img_link': news_img_link,
                'news_link': link,
-               'top_comment': top_comment})
+               'top_comment': top_comment}
+
+        if url == cls.PEOPLE_URL:
+            cls._saver_db(obj, tag_name='people')
+
+    @classmethod
+    def _saver_db(cls, oj, tag_name):
+        news_tag = NewsTag.objects.get(tag_name=tag_name)
+        news = News.objects.update_or_create(news_tag=news_tag, **oj)
+        print(news)
 
     @classmethod
     def _get_session(cls, base_url, ocra, session):
@@ -64,8 +74,8 @@ class Parser:
     def get_people(cls, ocra):
         with requests.Session() as session:
             cls._get_session(cls.PEOPLE_URL, ocra, session)
-            cls._get_session(cls.REALT_URL, ocra, session)
-            cls._get_session(cls.TETH_URL, ocra, session)
+            # cls._get_session(cls.REALT_URL, ocra, session)
+            # cls._get_session(cls.TETH_URL, ocra, session)
 
 
 
