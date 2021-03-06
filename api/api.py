@@ -21,4 +21,4 @@ class TagsViewSet(ReadOnlyModelViewSet):
 
 class NewsViewset(ReadOnlyModelViewSet):
     serializer_class = NewsSerializer
-    queryset = News.objects.all()
+    queryset = News.objects.all()[:1]
