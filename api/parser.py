@@ -13,19 +13,19 @@ class Parser:
     AUTO_URL = 'https://auto.onliner.by'
 
     @classmethod
-    def _get_tag_requests(cls, url, session, str_date, ocra):
+    def _get_tag_requests(cls, url, session, str_date, ocra, tag_name):
         dom = session.get(f'{url}/{str_date}').text
         soup = bs(dom, 'html.parser')
         list_of = soup.find_all('div', class_='news-tidings__item')
         for i in list_of:
             try:
-                cls._get_news(i, url, ocra)
+                cls._get_news(i, url, ocra, tag_name)
             except Exception as e:
                 print(e)
                 continue
 
     @classmethod
-    def _get_news(cls, el, url, ocra):
+    def _get_news(cls, el, url, ocra, tag_name):
 
         data_post_date = el['data-post-date']
         news_link = el.find('a', class_='news-tiles__stub')
@@ -43,6 +43,7 @@ class Parser:
         news_img_link = img[img.find('https'):-2]
 
         link = url + link
+        print(link)
         ocra.get(link)
 
         html = ocra.page_source
@@ -55,8 +56,7 @@ class Parser:
                'news_link': link,
                'top_comment': top_comment}
 
-        if url == cls.PEOPLE_URL:
-            cls._saver_db(obj, tag_name='people')
+        cls._saver_db(obj, tag_name)
 
     @classmethod
     def _saver_db(cls, oj, tag_name):
@@ -65,17 +65,17 @@ class Parser:
         print(news)
 
     @classmethod
-    def _get_session(cls, base_url, ocra, session):
+    def _get_session(cls, base_url, ocra, session, tag_name):
         str_date = datetime.date.today().strftime("%Y/%m/%d")
-        cls._get_tag_requests(base_url, session, str_date, ocra)
+        cls._get_tag_requests(base_url, session, str_date, ocra, tag_name)
 
 
     @classmethod
     def get_people(cls, ocra):
         with requests.Session() as session:
-            cls._get_session(cls.PEOPLE_URL, ocra, session)
-            # cls._get_session(cls.REALT_URL, ocra, session)
-            # cls._get_session(cls.TETH_URL, ocra, session)
+            # cls._get_session(cls.PEOPLE_URL, ocra, session, tag_name='people')
+            cls._get_session(cls.REALT_URL, ocra, session, tag_name='realt')
+            # cls._get_session(cls.TETH_URL, ocra, session, tag_name='tech')
 
 
 

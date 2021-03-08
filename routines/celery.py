@@ -10,7 +10,7 @@ app.autodiscover_tasks()
 app.conf.beat_schedule = {
     'run-people': {
         'task': 'api.tasks.get_people_news',
-        'schedule': crontab(minute='*/2')
+        'schedule': crontab(minute='*/1')
         },
     # 'run-test_selery': {
     #     'task': 'api.tasks.test_selery',
