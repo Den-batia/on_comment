@@ -8,5 +8,5 @@ class QueryMixin:
         if len(self.request.query_params) > 1:
             _from = int(self.request.query_params['from'])
             _too = int(self.request.query_params['too'])
-            return News.objects.filter(news_tag=tag)[_from:_too]
-        return News.objects.filter(news_tag=tag)[:5]
+            return News.objects.filter(news_tag=tag).order_by('-post_date')[_from:_too]
+        return News.objects.filter(news_tag=tag).order_by('-post_date')[:5]

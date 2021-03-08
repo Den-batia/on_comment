@@ -13,7 +13,7 @@ class NewsViewset(ReadOnlyModelViewSet):
     serializer_class = NewsSerializer
 
     def get_queryset(self):
-        return News.objects.all()
+        return News.objects.all()[:5]
 
 
 class NewsPeopleViewSet(ReadOnlyModelViewSet, QueryMixin):
