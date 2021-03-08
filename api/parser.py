@@ -43,7 +43,6 @@ class Parser:
         news_img_link = img[img.find('https'):-2]
 
         link = url + link
-        print(link)
         ocra.get(link)
 
         html = ocra.page_source
@@ -74,8 +73,8 @@ class Parser:
     def get_people(cls, ocra):
         with requests.Session() as session:
             # cls._get_session(cls.PEOPLE_URL, ocra, session, tag_name='people')
-            cls._get_session(cls.REALT_URL, ocra, session, tag_name='realt')
-            # cls._get_session(cls.TETH_URL, ocra, session, tag_name='tech')
+            # cls._get_session(cls.REALT_URL, ocra, session, tag_name='realt')
+            cls._get_session(cls.TETH_URL, ocra, session, tag_name='tech')
 
 
 
