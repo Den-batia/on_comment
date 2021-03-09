@@ -1,13 +1,15 @@
 from django.urls import path
 from rest_framework import routers
 
-from .api import TagsViewSet, NewsViewset, NewsPeopleViewSet, NewsRealtViewSet
+from .api import TagsViewSet, NewsViewset, NewsPeopleViewSet, NewsRealtViewSet, NewsTechViewSet, NewsAutoViewSet
 
 router = routers.DefaultRouter()
 
 router.register('v1/news-tags', TagsViewSet, 'news-tags')
 router.register('v1/news/people', NewsPeopleViewSet, 'news-people')
 router.register('v1/news/realt', NewsRealtViewSet, 'news-realt')
+router.register('v1/news/tech', NewsTechViewSet, 'news-tech')
+router.register('v1/news/auto', NewsAutoViewSet, 'news-auto')
 router.register('v1/news', NewsViewset, 'news')
 urlpatterns = router.urls
 

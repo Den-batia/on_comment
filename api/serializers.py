@@ -6,7 +6,7 @@ from .api import NewsTag, News
 class NewsTagSerializer(ModelSerializer):
     class Meta:
         model = NewsTag
-        fields = ('id', 'tag_name', 'news')
+        fields = ('id', 'tag_name',)
 
 
 class TagSerializer(ModelSerializer):

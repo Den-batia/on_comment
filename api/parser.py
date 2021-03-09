@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup as bs
 import requests
 import datetime
 from .models import News, NewsTag
+import time
 
 
 class Parser:
@@ -19,7 +20,9 @@ class Parser:
         list_of = soup.find_all('div', class_='news-tidings__item')
         for i in list_of:
             try:
-                cls._get_news(i, url, ocra, tag_name)
+                # cls._get_news(i, url, ocra, tag_name)
+                print(1111111)
+                time.sleep(1)
             except Exception as e:
                 print(e)
                 continue
@@ -74,7 +77,7 @@ class Parser:
         with requests.Session() as session:
             # cls._get_session(cls.PEOPLE_URL, ocra, session, tag_name='people')
             # cls._get_session(cls.REALT_URL, ocra, session, tag_name='realt')
-            cls._get_session(cls.TETH_URL, ocra, session, tag_name='tech')
-
+            # cls._get_session(cls.TETH_URL, ocra, session, tag_name='tech')
+            cls._get_session(cls.AUTO_URL, ocra, session, tag_name='auto')
 
 

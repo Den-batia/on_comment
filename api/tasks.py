@@ -1,17 +1,21 @@
 from celery import shared_task
-from .webdriver.webdriver import Ocra
+from .webdriver.webdriver import ocra
 
 
 @shared_task(soft_time_limit=30)
 def get_people_news():
     from .parser import Parser
     try:
-        ocra = Ocra.get_html_js()
-        Parser.get_people(ocra)
-        ocra.quit()
+        ocra.init_browser()
+        if ocra.browser:
+            Parser.get_people(ocra.browser)
+            ocra.quite_browser()
+        else:
+            print('noooooooooooooooooooo')
+            return
     except Exception as e:
         print(e)
-        ocra.quit()
+        # ocra.quite_browser()
 
 
 

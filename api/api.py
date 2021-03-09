@@ -9,11 +9,11 @@ class TagsViewSet(ReadOnlyModelViewSet):
     queryset = NewsTag.objects.all()
 
 
-class NewsViewset(ReadOnlyModelViewSet):
+class NewsViewset(ReadOnlyModelViewSet, QueryMixin):
     serializer_class = NewsSerializer
 
     def get_queryset(self):
-        return News.objects.all()[:5]
+        return self.get_query()
 
 
 class NewsPeopleViewSet(ReadOnlyModelViewSet, QueryMixin):
@@ -28,3 +28,17 @@ class NewsRealtViewSet(ReadOnlyModelViewSet, QueryMixin):
 
     def get_queryset(self):
         return self.get_query(tag_name='realt')
+
+
+class NewsTechViewSet(ReadOnlyModelViewSet, QueryMixin):
+    serializer_class = NewsSerializer
+
+    def get_queryset(self):
+        return self.get_query(tag_name='tech')
+
+
+class NewsAutoViewSet(ReadOnlyModelViewSet, QueryMixin):
+    serializer_class = NewsSerializer
+
+    def get_queryset(self):
+        return self.get_query(tag_name='auto')
