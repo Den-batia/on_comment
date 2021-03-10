@@ -12,10 +12,10 @@ class NewsTag(models.Model):
 class News(models.Model):
     id = models.UUIDField(primary_key=True, unique=True, default=uuid4, editable=False)
     news_tag = models.ForeignKey(NewsTag, on_delete=models.CASCADE, related_name='news')
-    post_date = models.IntegerField(default=None)
+    post_date = models.IntegerField(default=None, )
     news_img_link = models.URLField(default='')
     news_link = models.URLField(default='')
-    news_text = models.TextField(max_length=300)
+    news_text = models.TextField(max_length=300, unique=True)
     top_comment = models.TextField(max_length=300)
     likes = models.IntegerField(default=0)
     dislikes = models.IntegerField(default=0)

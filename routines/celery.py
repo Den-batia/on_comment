@@ -13,7 +13,7 @@ app.autodiscover_tasks()
 app.conf.beat_schedule = {
     'run-people': {
         'task': 'routines.celery.get_people_news',
-        'schedule': crontab(minute='*/15')
+        'schedule': crontab(minute='*/1')
     }
 }
 
@@ -25,5 +25,5 @@ def get_people_news():
     try:
         Parser.get_people(browser)
         browser.quit()
-    except Exception:
+    except SoftTimeLimitExceeded:
         browser.quit()

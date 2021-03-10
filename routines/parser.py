@@ -59,14 +59,14 @@ class Parser:
 
     @classmethod
     def _saver_db(cls, oj, tag_name):
-        news_tag = NewsTag.objects.get(tag_name=tag_name)
-        news = News.objects.update_or_create(news_tag=news_tag, **oj)
+        news = News.objects.update_or_create(news_tag=tag_name, news_text=oj['news_text'], defaults=oj)
         print(news)
 
     @classmethod
     def _get_session(cls, base_url, ocra, session, tag_name):
+        news_tag = NewsTag.objects.get(tag_name=tag_name)
         str_date = datetime.date.today().strftime("%Y/%m/%d")
-        cls._get_tag_requests(base_url, session, str_date, ocra, tag_name)
+        cls._get_tag_requests(base_url, session, str_date, ocra, news_tag)
 
 
     @classmethod
