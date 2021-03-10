@@ -1,10 +1,8 @@
-from .webdriver.webdriver import Ocra
 from bs4 import BeautifulSoup as bs
 import requests
 import datetime
-from .models import News, NewsTag
+from api.models import News, NewsTag
 import time
-
 
 class Parser:
 
@@ -20,11 +18,10 @@ class Parser:
         list_of = soup.find_all('div', class_='news-tidings__item')
         for i in list_of:
             try:
-                # cls._get_news(i, url, ocra, tag_name)
-                print(1111111)
+                cls._get_news(i, url, ocra, tag_name)
                 time.sleep(1)
-            except Exception as e:
-                print(e)
+            except AttributeError as e:
+                print('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
                 continue
 
     @classmethod
@@ -75,9 +72,9 @@ class Parser:
     @classmethod
     def get_people(cls, ocra):
         with requests.Session() as session:
-            # cls._get_session(cls.PEOPLE_URL, ocra, session, tag_name='people')
-            # cls._get_session(cls.REALT_URL, ocra, session, tag_name='realt')
-            # cls._get_session(cls.TETH_URL, ocra, session, tag_name='tech')
+            cls._get_session(cls.PEOPLE_URL, ocra, session, tag_name='people')
+            cls._get_session(cls.REALT_URL, ocra, session, tag_name='realt')
+            cls._get_session(cls.TETH_URL, ocra, session, tag_name='tech')
             cls._get_session(cls.AUTO_URL, ocra, session, tag_name='auto')
 
 
