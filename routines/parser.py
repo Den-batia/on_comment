@@ -72,9 +72,9 @@ class Parser:
     @classmethod
     def get_people(cls, ocra):
         with requests.Session() as session:
-            cls._get_session(cls.PEOPLE_URL, ocra, session, tag_name='people')
-            cls._get_session(cls.REALT_URL, ocra, session, tag_name='realt')
-            cls._get_session(cls.TETH_URL, ocra, session, tag_name='tech')
+            # cls._get_session(cls.PEOPLE_URL, ocra, session, tag_name='people')
+            # cls._get_session(cls.REALT_URL, ocra, session, tag_name='realt')
+            # cls._get_session(cls.TETH_URL, ocra, session, tag_name='tech')
             cls._get_session(cls.AUTO_URL, ocra, session, tag_name='auto')
 
 

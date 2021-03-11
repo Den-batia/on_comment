@@ -8,12 +8,12 @@ from api.webdriver.webdriver import ocra
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'on_comment.settings')
 app = Celery('on_comment')
 app.config_from_object('django.conf:settings', namespace='CELERY')
-app.autodiscover_tasks()
+# app.autodiscover_tasks()
 
 app.conf.beat_schedule = {
     'run-people': {
         'task': 'routines.celery.get_people_news',
-        'schedule': crontab(minute='*/1')
+        'schedule': crontab(minute='*/15')
     }
 }
 
