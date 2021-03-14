@@ -1,4 +1,4 @@
-version: '3.9'
+version: '3.7'
 
 services:
 
@@ -25,6 +25,8 @@ services:
       - 5432:5432
     networks:
       - proxy
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
 
   celery:
     build: .

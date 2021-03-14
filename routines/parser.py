@@ -21,7 +21,7 @@ class Parser:
                 cls._get_news(i, url, ocra, tag_name)
                 time.sleep(1)
             except AttributeError as e:
-                print('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
+                print(e)
                 continue
 
     @classmethod
@@ -68,13 +68,12 @@ class Parser:
         str_date = datetime.date.today().strftime("%Y/%m/%d")
         cls._get_tag_requests(base_url, session, str_date, ocra, news_tag)
 
-
     @classmethod
     def get_people(cls, ocra):
         with requests.Session() as session:
-            # cls._get_session(cls.PEOPLE_URL, ocra, session, tag_name='people')
-            # cls._get_session(cls.REALT_URL, ocra, session, tag_name='realt')
-            # cls._get_session(cls.TETH_URL, ocra, session, tag_name='tech')
+            cls._get_session(cls.PEOPLE_URL, ocra, session, tag_name='people')
+            cls._get_session(cls.REALT_URL, ocra, session, tag_name='realt')
+            cls._get_session(cls.TETH_URL, ocra, session, tag_name='tech')
             cls._get_session(cls.AUTO_URL, ocra, session, tag_name='auto')
 
 
