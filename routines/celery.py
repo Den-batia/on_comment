@@ -1,6 +1,6 @@
 import os
 from celery import Celery
-from celery.exceptions import SoftTimeLimitExceeded
+from celery.exceptions import SoftTimeLimitExceeded, TimeLimitExceeded
 from celery.schedules import crontab
 from api.webdriver.webdriver import ocra
 
@@ -13,12 +13,12 @@ app.config_from_object('django.conf:settings', namespace='CELERY')
 app.conf.beat_schedule = {
     'run-people': {
         'task': 'routines.celery.get_people_news',
-        'schedule': crontab(minute='*/20')
+        'schedule': crontab(minute='*/20', hour='8-23')
     }
 }
 
 
-@app.task(soft_time_limit=600, time_limit=700)
+@app.task(soft_time_limit=10, time_limit=15)
 def get_people_news():
     from .parser import Parser
     browser = ocra.get_browser()
@@ -26,4 +26,6 @@ def get_people_news():
         Parser.get_people(browser)
         browser.quit()
     except SoftTimeLimitExceeded:
+        browser.quit()
+    except TimeLimitExceeded as e:
         browser.quit()

@@ -17,12 +17,7 @@ class Parser:
         soup = bs(dom, 'html.parser')
         list_of = soup.find_all('div', class_='news-tidings__item')
         for i in list_of:
-            try:
-                cls._get_news(i, url, ocra, tag_name)
-                time.sleep(1)
-            except AttributeError as e:
-                print(e)
-                continue
+            cls._get_news(i, url, ocra, tag_name)
 
     @classmethod
     def _get_news(cls, el, url, ocra, tag_name):
@@ -47,7 +42,11 @@ class Parser:
 
         html = ocra.page_source
         soup = bs(html, 'html.parser')
-        top_comment = soup.find('div', class_='news-comment__speech news-comment__speech_base').p.text
+        try:
+            top_comment = soup.find('div', class_='news-comment__speech news-comment__speech_base').p.text
+        except AttributeError as e:
+            print('KeyError')
+            top_comment = ''
 
         obj = {'post_date': data_post_date,
                'news_text': news_text,
@@ -59,7 +58,7 @@ class Parser:
 
     @classmethod
     def _saver_db(cls, oj, tag_name):
-        news = News.objects.update_or_create(news_tag=tag_name, news_text=oj['news_text'], defaults=oj)
+        news = News.objects.update_or_create(news_tag=tag_name, post_date=oj['post_date'], defaults=oj)
         print(news)
 
     @classmethod
