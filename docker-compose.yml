@@ -18,9 +18,9 @@ services:
   postgres:
     image: postgres:12.0
     environment:
-      POSTGRES_PASSWORD: pass
-      POSTGRES_USER: tester
-      POSTGRES_DB: postgres
+      POSTGRES_PASSWORD: osad12
+      POSTGRES_USER: den_user
+      POSTGRES_DB: bd_user
     ports:
       - 5432:5432
     networks:
