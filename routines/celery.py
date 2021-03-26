@@ -13,12 +13,14 @@ app.config_from_object('django.conf:settings', namespace='CELERY')
 app.conf.beat_schedule = {
     'run-people': {
         'task': 'routines.celery.get_people_news',
-        'schedule': crontab(minute='*/20', hour='8-23')
+        # 'schedule': crontab(minute='*/20', hour='8-23'),
+        'schedule': 30
+
     }
 }
 
 
-@app.task(soft_time_limit=10, time_limit=15)
+@app.task(soft_time_limit=30, time_limit=40)
 def get_people_news():
     from .parser import Parser
     browser = ocra.get_browser()

@@ -18,9 +18,9 @@ services:
   postgres:
     image: postgres:12.0
     environment:
-      POSTGRES_PASSWORD: osad12
-      POSTGRES_USER: den_user
-      POSTGRES_DB: bd_user
+      POSTGRES_PASSWORD: pass
+      POSTGRES_USER: tester
+      POSTGRES_DB: postgres
     ports:
       - 5432:5432
     networks:
@@ -34,8 +34,11 @@ services:
     depends_on:
       - postgres
       - redis
+      - chrome
+      - selenium-hub
     networks:
       - proxy
+    restart: always
 
   redis:
     hostname: redis
@@ -57,6 +60,7 @@ services:
       - "6900:5900"
     networks:
       - proxy
+    restart: always
 
   selenium-hub:
     image: selenium/hub:4.0.0-beta-2-prerelease-20210312
@@ -66,6 +70,7 @@ services:
       - "4444:4444"
     networks:
       - proxy
+    restart: always
 
 networks:
   proxy:

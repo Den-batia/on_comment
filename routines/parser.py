@@ -2,7 +2,6 @@ from bs4 import BeautifulSoup as bs
 import requests
 import datetime
 from api.models import News, NewsTag
-import time
 
 class Parser:
 
@@ -44,15 +43,21 @@ class Parser:
         soup = bs(html, 'html.parser')
         try:
             top_comment = soup.find('div', class_='news-comment__speech news-comment__speech_base').p.text
+            likes = int(soup.find('a', class_='news-comment__button_counter_up').span.text)
+            dislikes = int(soup.find('a', class_='news-comment__button_counter_down').span.text)
         except AttributeError as e:
             print('KeyError')
             top_comment = ''
+            likes = 0
+            dislikes = 0
 
         obj = {'post_date': data_post_date,
                'news_text': news_text,
                'news_img_link': news_img_link,
                'news_link': link,
-               'top_comment': top_comment}
+               'top_comment': top_comment,
+               'likes': likes,
+               'dislikes': dislikes}
 
         cls._saver_db(obj, tag_name)
 
