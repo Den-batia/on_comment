@@ -1,7 +1,9 @@
 from bs4 import BeautifulSoup as bs
 import requests
 import datetime
+import time
 from api.models import News, NewsTag
+
 
 class Parser:
 
@@ -11,15 +13,33 @@ class Parser:
     AUTO_URL = 'https://auto.onliner.by'
 
     @classmethod
-    def _get_tag_requests(cls, url, session, str_date, ocra, tag_name):
+    def _get_tag_requests(cls, url, session, str_date, news_tag, tag_name):
         dom = session.get(f'{url}/{str_date}').text
         soup = bs(dom, 'html.parser')
         list_of = soup.find_all('div', class_='news-tidings__item')
         for i in list_of:
-            cls._get_news(i, url, ocra, tag_name)
+            obj = cls._get_news(i, url)
+            news_id = cls._get_news_id(session, obj['news_link'])
+            top_comment = cls._get_comment(session, tag_name, news_id)
+            obj.update(top_comment)
+            cls._saver_db(obj, news_tag)
+            time.sleep(1)
 
     @classmethod
-    def _get_news(cls, el, url, ocra, tag_name):
+    def _get_comment(cls, session, tag_name, news_id):
+        res = session.get(f'https://comments.api.onliner.by/news/{tag_name}.post/{news_id}/comments?limit=15').json()
+        if res['pins']:
+            data = res['pins']['best']['comment']
+            return {'likes': data['marks']['likes'], 'dislikes': data['marks']['dislikes'], 'top_comment': data['text']}
+        return {'likes': 0, 'dislikes': 0, 'top_comment': ''}
+
+    @classmethod
+    def _get_news_id(cls, session, url):
+        res = session.get(url).text
+        return bs(res, 'html.parser').find('span', class_='news_view_count')['news_id']
+
+    @classmethod
+    def _get_news(cls, el, url):
 
         data_post_date = el['data-post-date']
         news_link = el.find('a', class_='news-tiles__stub')
@@ -37,47 +57,32 @@ class Parser:
         news_img_link = img[img.find('https'):-2]
 
         link = url + link
-        ocra.get(link)
-
-        html = ocra.page_source
-        soup = bs(html, 'html.parser')
-        try:
-            top_comment = soup.find('div', class_='news-comment__speech news-comment__speech_base').p.text
-            likes = int(soup.find('a', class_='news-comment__button_counter_up').span.text)
-            dislikes = int(soup.find('a', class_='news-comment__button_counter_down').span.text)
-        except AttributeError as e:
-            print('KeyError')
-            top_comment = ''
-            likes = 0
-            dislikes = 0
 
         obj = {'post_date': data_post_date,
                'news_text': news_text,
                'news_img_link': news_img_link,
-               'news_link': link,
-               'top_comment': top_comment,
-               'likes': likes,
-               'dislikes': dislikes}
+               'news_link': link
+               }
 
-        cls._saver_db(obj, tag_name)
+        return obj
 
     @classmethod
-    def _saver_db(cls, oj, tag_name):
-        news = News.objects.update_or_create(news_tag=tag_name, post_date=oj['post_date'], defaults=oj)
+    def _saver_db(cls, oj, news_tag):
+        news = News.objects.update_or_create(news_tag=news_tag, post_date=oj['post_date'], defaults=oj)
         print(news)
 
     @classmethod
-    def _get_session(cls, base_url, ocra, session, tag_name):
+    def _get_session(cls, base_url, session, tag_name):
         news_tag = NewsTag.objects.get(tag_name=tag_name)
         str_date = datetime.date.today().strftime("%Y/%m/%d")
-        cls._get_tag_requests(base_url, session, str_date, ocra, news_tag)
+        cls._get_tag_requests(base_url, session, str_date, news_tag, tag_name)
 
     @classmethod
-    def get_people(cls, ocra):
+    def get_people(cls):
         with requests.Session() as session:
-            cls._get_session(cls.PEOPLE_URL, ocra, session, tag_name='people')
-            cls._get_session(cls.REALT_URL, ocra, session, tag_name='realt')
-            cls._get_session(cls.TETH_URL, ocra, session, tag_name='tech')
-            cls._get_session(cls.AUTO_URL, ocra, session, tag_name='auto')
+            cls._get_session(cls.PEOPLE_URL, session, tag_name='people')
+            cls._get_session(cls.REALT_URL, session, tag_name='realt')
+            cls._get_session(cls.TETH_URL, session, tag_name='tech')
+            cls._get_session(cls.AUTO_URL, session, tag_name='auto')
 
 
